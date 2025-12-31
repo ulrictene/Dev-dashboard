@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { STORAGE_KEYS } from "../../../app/config/constants";
 import { useLocalStorage } from "../../../shared/hooks/useLocalStorage";
 import type { PomodoroState } from "./types";
@@ -9,19 +9,22 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-export function usePomodoro() {
-  const [state, setState] = useLocalStorage<PomodoroState>(
-    STORAGE_KEYS.pomodoro,
-    {
-      runState: "idle",
-      remainingSeconds: DEFAULT_FOCUS_MINUTES * 60,
-      runningStartedAt: null,
-      remainingAtStart: null,
-      focusMinutes: DEFAULT_FOCUS_MINUTES,
-    }
-  );
+export function usePomodoro(options?: { onComplete?: (minutes: number) => void }) {
+  const [state, setState] = useLocalStorage<PomodoroState>(STORAGE_KEYS.pomodoro, {
+    runState: "idle",
+    remainingSeconds: DEFAULT_FOCUS_MINUTES * 60,
+    runningStartedAt: null,
+    remainingAtStart: null,
+    focusMinutes: DEFAULT_FOCUS_MINUTES,
+    completionToken: null,
+  });
 
-  // Derived remaining time while running (based on real clock, not setInterval drift)
+  const onCompleteRef = useRef(options?.onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = options?.onComplete;
+  }, [options?.onComplete]);
+
   const computedRemaining = useMemo(() => {
     if (state.runState !== "running") return state.remainingSeconds;
 
@@ -40,7 +43,6 @@ export function usePomodoro() {
     state.remainingAtStart,
   ]);
 
-  // Tick: update stored remainingSeconds occasionally (keeps UI responsive & persistence accurate)
   useEffect(() => {
     if (state.runState !== "running") return;
 
@@ -56,14 +58,18 @@ export function usePomodoro() {
         const elapsedSeconds = Math.floor((Date.now() - startedAtMs) / 1000);
         const nextRemaining = clamp(base - elapsedSeconds, 0, base);
 
-        // When hits 0, stop
         if (nextRemaining === 0) {
+          if (!prev.completionToken) {
+            onCompleteRef.current?.(prev.focusMinutes);
+          }
+
           return {
             ...prev,
             runState: "idle",
             remainingSeconds: 0,
             runningStartedAt: null,
             remainingAtStart: null,
+            completionToken: prev.completionToken ?? new Date().toISOString(),
           };
         }
 
@@ -72,7 +78,7 @@ export function usePomodoro() {
     }, 250);
 
     return () => window.clearInterval(id);
-  }, [state.runState, setState]);
+  }, [state.runState, setState]); 
 
   function start() {
     setState((prev) => {
@@ -82,6 +88,7 @@ export function usePomodoro() {
         runState: "running",
         runningStartedAt: new Date().toISOString(),
         remainingAtStart: prev.remainingSeconds,
+        completionToken: null, 
       };
     });
   }
@@ -93,6 +100,7 @@ export function usePomodoro() {
       const startedAtMs = prev.runningStartedAt
         ? new Date(prev.runningStartedAt).getTime()
         : Date.now();
+
       const base = prev.remainingAtStart ?? prev.remainingSeconds;
       const elapsedSeconds = Math.floor((Date.now() - startedAtMs) / 1000);
       const nextRemaining = clamp(base - elapsedSeconds, 0, base);
@@ -114,6 +122,7 @@ export function usePomodoro() {
       remainingSeconds: prev.focusMinutes * 60,
       runningStartedAt: null,
       remainingAtStart: null,
+      completionToken: null, 
     }));
   }
 
@@ -122,9 +131,7 @@ export function usePomodoro() {
     setState((prev) => ({
       ...prev,
       focusMinutes: m,
-      ...(prev.runState === "idle"
-        ? { remainingSeconds: m * 60 }
-        : null),
+      ...(prev.runState === "idle" ? { remainingSeconds: m * 60 } : null),
     }));
   }
 

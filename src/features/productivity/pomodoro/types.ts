@@ -12,4 +12,6 @@ export type PomodoroState = {
 
   // settings (keep minimal for now)
   focusMinutes: number; // default 25
+  completionToken?: string | null;
 };
+

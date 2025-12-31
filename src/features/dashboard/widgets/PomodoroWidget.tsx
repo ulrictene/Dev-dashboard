@@ -1,34 +1,21 @@
-// import WidgetCard from "../../dashboard/components/WidgetCard";
-
-// export default function PomodoroWidget() {
-//   return (
-//     <WidgetCard title="Pomodoro" subtitle="Focus timer">
-//       <div className="flex items-center justify-between gap-4">
-//         <div className="h-20 w-20 rounded-full border bg-zinc-50" />
-//         <div className="flex-1">
-//           <div className="text-2xl font-semibold tabular-nums">25:00</div>
-//           <div className="mt-2 flex gap-2">
-//             <div className="h-9 w-20 rounded-xl border bg-white" />
-//             <div className="h-9 w-20 rounded-xl border bg-white" />
-//             <div className="h-9 w-20 rounded-xl border bg-white" />
-//           </div>
-//         </div>
-//       </div>
-//     </WidgetCard>
-//   );
-// }
 import WidgetCard from "../../dashboard/components/WidgetCard";
 import { formatMMSS, usePomodoro } from "../../../features/productivity/pomodoro/usePomodoro";
+import { useTimeLogs } from "../../../features/productivity/timelogs/useTimeLogs";
 
 export default function PomodoroWidget() {
-  const { state, start, pause, reset } = usePomodoro();
+  const { addLog } = useTimeLogs();
+
+  const { state, start, pause, reset } = usePomodoro({
+    onComplete: (minutes) => {
+      addLog({ minutes, label: "Pomodoro focus", source: "pomodoro" });
+    },
+  });
 
   const time = formatMMSS(state.remainingSeconds);
 
   return (
     <WidgetCard title="Pomodoro" subtitle="Focus timer">
       <div className="flex items-center gap-4">
-        {/* Simple ring placeholder for now */}
         <div className="grid h-20 w-20 place-items-center rounded-full border bg-zinc-50">
           <div className="text-xs text-zinc-500">Focus</div>
         </div>
@@ -69,3 +56,4 @@ export default function PomodoroWidget() {
     </WidgetCard>
   );
 }
+
