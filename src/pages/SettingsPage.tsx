@@ -1,13 +1,17 @@
 import { usePreferences } from "../features/settings/usePreferences";
+import ThemeToggle from "../features/settings/ThemeToggle";
 
 export default function SettingsPage() {
   const { prefs, setGithubUsername } = usePreferences();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h1 className="text-xl font-semibold">Settings</h1>
-
-      <div className="rounded-2xl border bg-white p-6 shadow-sm">
+           <div className="grid gap-6 sm:grid-cols-2">
+        <div className="rounded-2xl border bg-white p-6 shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
+          <ThemeToggle />
+          </div>
+      <div className="rounded-2xl border bg-white p-6 shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
         <div className="text-sm font-semibold">Integrations</div>
         <div className="mt-4 space-y-2">
           <label className="block text-sm text-zinc-600">GitHub username</label>
@@ -22,6 +26,7 @@ export default function SettingsPage() {
           </p>
         </div>
       </div>
+    </div>
     </div>
   );
 }

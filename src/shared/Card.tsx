@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 
 export function Card({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-2xl border bg-white shadow-sm">{children}</div>
+    <div className="rounded-2xl border bg-white dark:bg-zinc-800
+ shadow-sm dark:bg-zinc-900 dark:border-zinc-700">{children}</div>
   );
 }
 
