@@ -2,8 +2,9 @@ import WidgetCard from "../../dashboard/components/WidgetCard";
 import { useTasks } from "../../productivity/useTasks";
 import { useTimeLogs } from "../../../features/productivity/timelogs/useTimeLogs";
 import { toDayKey } from "../../../shared/utils/dates";
-
+import { useWeather } from "../../../features/weather/useWeather";
 export default function SummaryWidget() {
+  const weather = useWeather();
   const { tasks } = useTasks();
   const { totalMinutesForDay } = useTimeLogs();
 
@@ -11,6 +12,12 @@ export default function SummaryWidget() {
 
   const todayKey = toDayKey(new Date());
   const loggedMins = totalMinutesForDay(todayKey);
+  const weatherValue =
+    weather.status === "loading"
+      ? "…"
+      : weather.status === "error"
+      ? "!"
+      : `${weather.data.now.tempC}°`;
 
   return (
     <WidgetCard title="Today" subtitle="At-a-glance">
@@ -18,7 +25,7 @@ export default function SummaryWidget() {
         <Stat label="Tasks done" value={String(tasksDone)} />
         <Stat label="Focus mins" value={String(loggedMins)} />
         <Stat label="Logged mins" value={String(loggedMins)} />
-        <Stat label="Weather" value="—" />
+        <Stat label="Weather" value={weatherValue} />
       </div>
     </WidgetCard>
   );
