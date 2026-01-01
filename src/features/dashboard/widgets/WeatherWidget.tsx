@@ -1,24 +1,34 @@
 import WidgetCard from "../../dashboard/components/WidgetCard";
+import { useWeather } from "../../../features/weather/useWeather";
 
 export default function WeatherWidget() {
+  const weather = useWeather();
+
   return (
-    <WidgetCard title="Weather" subtitle="London (placeholder)">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-3xl font-semibold">—°</div>
-          <div className="mt-1 text-sm text-zinc-600">Loading later</div>
+    <WidgetCard title="Weather" subtitle="London">
+      {weather.status === "loading" && (
+        <div className="text-sm text-zinc-500">Loading weather…</div>
+      )}
+
+      {weather.status === "error" && (
+        <div className="text-sm text-red-600">Failed to load weather</div>
+      )}
+
+      {weather.status === "success" && (
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-3xl font-semibold">
+              {weather.data.now.tempC}°
+            </div>
+            <div className="mt-1 text-sm text-zinc-600">
+              {weather.data.now.condition}
+            </div>
+          </div>
+
+          <div className="h-16 w-16 rounded-2xl border bg-zinc-50" />
         </div>
-        <div className="h-16 w-16 rounded-2xl border bg-zinc-50" />
-      </div>
-      <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
-        <Chip />
-        <Chip />
-        <Chip />
-      </div>
+      )}
     </WidgetCard>
   );
 }
 
-function Chip() {
-  return <div className="h-10 rounded-xl border bg-white" />;
-}
