@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# Personal Dev Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A personal productivity dashboard built to explore **modern frontend architecture, state management, and API integration**.
 
-Currently, two official plugins are available:
+The app combines task management, focus tracking, time logging, and live integrations into a clean, responsive interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- ✅ Task management (add, complete, delete)
+- ⏱️ Pomodoro focus timer with accurate time tracking
+- 📊 Automatic time logs from completed focus sessions
+- 🌤️ Live weather data (Open-Meteo API)
+- 🧠 GitHub activity widget (public events)
+- 🗓️ Calendar widget (future-ready mock)
+- 🌙 Light / Dark / System theme with persistence
+- 💾 localStorage persistence for all user data
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **React + TypeScript**
+- **Vite**
+- **Tailwind CSS (v4, CSS-first)**
+- **React Router**
+- Public APIs (Open-Meteo, GitHub)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🧩 Architecture Highlights
+
+- Feature-based folder structure
+- Hooks for business logic (`useTasks`, `usePomodoro`, `useTimeLogs`)
+- Clear separation of:
+  - UI components
+  - State logic
+  - API services
+- Defensive handling of time-based logic (Pomodoro accuracy)
+
+---
+
+## 📸 Screenshots
+
+![Dashboard Dark](./public/screenshots/dashboard-dark.png)
+![Dashboard ](./public/screenshots/dashboard.png)
+![Dashboard2](./public/screenshots/dashboard2.png)
+![SETTINGS PAGE ](./public/screenshots/settingspage.png)
+---
+
+## 🚀 Running Locally
+
+```bash
+npm install
+npm run dev
+
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🔮 Future Improvements
+Calendar API integration (Google / Outlook)
+Manual time log editing
+Weekly / monthly analytics
+Account sync (Firebase / Supabase)

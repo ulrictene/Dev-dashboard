@@ -12,7 +12,6 @@ export default function AppShell() {
             <div className="h-8 w-8 rounded-xl bg-zinc-900" />
             <div className="leading-tight">
               <div className="text-sm font-semibold">Personal Dev Dashboard</div>
-              <div className="text-xs text-zinc-500">Month 1 build</div>
             </div>
           </div>
 
